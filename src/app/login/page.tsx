@@ -4,11 +4,14 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 export default function Login() {
-  const { isLoading, authenticated, login } = useStore();
+  const { isLoading, authenticated, login, setIsLoading } = useStore();
 
   if (isLoading) return <div>Loading...</div>;
 
-  if (authenticated) return redirect("/");
+  if (authenticated) {
+    setIsLoading(false);
+    return redirect("/");
+  }
   return (
     <div>
       <h1>Login Page</h1>

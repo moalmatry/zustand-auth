@@ -11,13 +11,14 @@ const AuthorizationProvider = <P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) => {
   const HOC: React.FC<P & WithAuthorizationProps> = (props) => {
-    const { authenticated, isLoading } = useStore();
+    const { authenticated, isLoading, setIsLoading } = useStore();
     console.log(authenticated);
 
     if (isLoading) {
       return <div>Loading...</div>;
     }
     if (!authenticated) {
+      setIsLoading(false);
       return redirect("/login");
     }
 

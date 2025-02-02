@@ -9,18 +9,18 @@ export type Store = AuthSlice & UserSlice;
 
 export const useStore = create<Store>()(
   devtools(
-    persist(
-      subscribeWithSelector(
-        immer((...a) => ({
-          // @ts-ignore
-          ...createUserSlice(...a),
-          // @ts-ignore
-          ...createAuthSlice(...a),
-        }))
-      ),
-      {
-        name: "local-storage",
-      }
-    )
+    // persist(
+    subscribeWithSelector(
+      immer((...a) => ({
+        // @ts-ignore
+        ...createUserSlice(...a),
+        // @ts-ignore
+        ...createAuthSlice(...a),
+      }))
+    ),
+    {
+      name: "local-storage",
+    }
+    // )
   )
 );
