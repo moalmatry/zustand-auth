@@ -1,3 +1,4 @@
+import { loginFn } from "@/services/auth/login";
 import { Register } from "@/types";
 import { StateCreator } from "zustand";
 
@@ -35,7 +36,7 @@ const initialState: AuthState = {
 };
 
 export type AuthSlice = AuthState & AuthActions;
-export const createUserSlice: StateCreator<
+export const createAuthSlice: StateCreator<
   AuthSlice,
   [["zustand/immer", never]],
   [],
@@ -71,13 +72,36 @@ export const createUserSlice: StateCreator<
       state.authenticated = authenticated;
     }),
 
-  login: (email, password) => {
+  login: async (email, password) => {
     // Implement login logic here
-    console.log(`Logging in with email: ${email} and password: ${password}`);
+    set((state) => {
+      state.isLoading = true;
+    });
+    const user = await loginFn(email, password);
+    set((state) => ({
+      ...state,
+      name: user.data.name,
+      id: user.data.id,
+      message: "Successfully login",
+      profileImg: user.data.profileImg,
+      token: user.token,
+      authenticated: true,
+      isLoading: false,
+    }));
   },
   logout: () => {
     // Implement logout logic here
     console.log("Logging out");
+
+    set(() => ({
+      id: "",
+      name: "",
+      message: "",
+      profileImg: "",
+      token: "",
+      isLoading: false,
+      authenticated: false,
+    }));
   },
   signup: (data: Register) => {
     // Implement signup logic here
