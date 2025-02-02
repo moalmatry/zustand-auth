@@ -13,6 +13,7 @@ const LoadingProvider = ({ children }: { children: React.ReactNode }) => {
 
     return () => clearTimeout(time);
   }, [setIsLoading]);
+
   return <>{children}</>;
 };
 

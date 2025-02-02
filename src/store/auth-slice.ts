@@ -1,4 +1,6 @@
+import { ID_KEY, NAME_KEY, PROFILE_IMG_KEY, TOKEN_KEY } from "@/constants";
 import { loginFn } from "@/services/auth/login";
+import { register } from "@/services/auth/register";
 import { Register } from "@/types";
 import { StateCreator } from "zustand";
 
@@ -88,11 +90,17 @@ export const createAuthSlice: StateCreator<
       authenticated: true,
       isLoading: false,
     }));
+    // NOTE: In Mobile replace it with expo-secure-store etc......
+    localStorage.setItem(ID_KEY, user.data.id);
+    localStorage.setItem(TOKEN_KEY, user.token);
+    localStorage.setItem(NAME_KEY, user.data.name);
+    localStorage.setItem(PROFILE_IMG_KEY, String(user.data.profileImg));
+
+    set((state) => {
+      state.isLoading = false;
+    });
   },
   logout: () => {
-    // Implement logout logic here
-    console.log("Logging out");
-
     set(() => ({
       id: "",
       name: "",
@@ -102,9 +110,27 @@ export const createAuthSlice: StateCreator<
       isLoading: false,
       authenticated: false,
     }));
+    // NOTE: In Mobile replace it with expo-secure-store etc......
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(ID_KEY);
+    localStorage.removeItem(NAME_KEY);
+    localStorage.removeItem(PROFILE_IMG_KEY);
   },
-  signup: (data: Register) => {
+  signup: async (data: Register) => {
+    set((state) => {
+      state.isLoading = true;
+    });
     // Implement signup logic here
-    console.log(`Signing up with data: ${JSON.stringify(data)}`);
+    const user = await register({ userData: data });
+
+    // NOTE: In Mobile replace it with expo-secure-store etc......
+    localStorage.setItem(ID_KEY, user.data.id);
+    localStorage.setItem(TOKEN_KEY, user.token);
+    localStorage.setItem(NAME_KEY, user.data.name);
+    localStorage.setItem(PROFILE_IMG_KEY, String(user.data.profileImg));
+
+    set((state) => {
+      state.isLoading = false;
+    });
   },
 });
